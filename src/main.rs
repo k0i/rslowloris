@@ -23,6 +23,11 @@ fn main() -> Result<()> {
             Flag::new("socket", FlagType::Int)
                 .description("socket count")
                 .alias("s"),
+        )
+        .flag(
+            Flag::new("port", FlagType::Int)
+                .description("port")
+                .alias("p"),
         );
     app.run(args);
     Ok(())
