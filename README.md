@@ -4,8 +4,7 @@
 
 ### This is a rust implementation of slowloris.
 
-
-![bandicam 2022-10-05 16-34-51-035](https://user-images.githubusercontent.com/100127291/194006077-523c7295-569f-449c-873b-acdfcd11f85e.gif)
+![Untitled](https://user-images.githubusercontent.com/100127291/194053882-dcc363d0-a7db-4a19-b14f-33bbb733be4b.gif)
 
 # Install
 TODO
