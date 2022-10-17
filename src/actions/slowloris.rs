@@ -25,7 +25,7 @@ pub fn slowloris(c: &seahorse::Context) {
     let port = c.int_flag("port").unwrap_or(80);
     let url = format!("{}:{}", c.args[0].clone(), port);
 
-    let sock_cnt = c.int_flag("socket").unwrap_or(10000);
+    let sock_cnt = c.int_flag("socket").unwrap_or(1000);
     let rx = ctrlc_handler();
 
     info!("Starting slowloris attack on {}", url);
