@@ -28,6 +28,11 @@ fn main() -> Result<()> {
             Flag::new("port", FlagType::Int)
                 .description("port")
                 .alias("p"),
+        )
+        .flag(
+            Flag::new("httponly", FlagType::Bool)
+                .description("use http connection")
+                .alias("ho"),
         );
     app.run(args);
     Ok(())
