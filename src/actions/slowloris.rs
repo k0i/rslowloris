@@ -14,7 +14,7 @@ use log::{debug, error, info};
 use rand::Rng;
 use rustls::{
     client::{ServerCertVerified, ServerCertVerifier},
-    Certificate, ClientConfig, ClientConnection, ServerName,
+    Certificate, ClientConfig, ClientConnection, ServerName, Stream,
 };
 use spinners::{Spinner, Spinners};
 
@@ -118,6 +118,13 @@ fn execute<P: ToSocketAddrs>(
                 continue;
             }
             let sock = sock_list.get_mut(i).unwrap();
+            let mut stream = Stream::new(&mut tls_client, sock);
+            if let Err(e) = stream.write_all(msg.as_bytes()) {
+                debug!("Socket failed. Removing...: {}", e);
+                sock_list.remove(i);
+            } else {
+                i += 1;
+            }
         }
         // Add new sockets if the list is not full
         for i in sock_list.len()..sock_cnt {
