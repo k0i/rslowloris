@@ -1,6 +1,6 @@
 mod actions;
 
-use actions::slowloris::slowloris;
+use actions::slowloris::main::do_loris;
 use anyhow::Result;
 use seahorse::{App, Flag, FlagType};
 use std::env;
@@ -13,7 +13,7 @@ fn main() -> Result<()> {
         .author(env!("CARGO_PKG_AUTHORS"))
         .version(env!("CARGO_PKG_VERSION"))
         .usage("rloris [OPTIONS] [ARGS]")
-        .action(slowloris)
+        .action(do_loris)
         .flag(
             Flag::new("verbose", FlagType::Bool)
                 .description("Verbose logging flag")
@@ -33,6 +33,11 @@ fn main() -> Result<()> {
             Flag::new("httponly", FlagType::Bool)
                 .description("use http connection")
                 .alias("ho"),
+        )
+        .flag(
+            Flag::new("proxy_file_path", FlagType::String)
+                .description("proxy file path")
+                .alias("pf"),
         );
     app.run(args);
     Ok(())
